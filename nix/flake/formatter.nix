@@ -1,0 +1,10 @@
+# Formatter configuration for `nix fmt` and `nix flake check`.
+{ inputs, ... }: {
+  imports = [ inputs.treefmt-nix.flakeModule ];
+  perSystem = _: {
+    treefmt = {
+      projectRootFile = "flake.nix";
+      programs.nixfmt.enable = true; # nixfmt-rfc-style
+    };
+  };
+}
