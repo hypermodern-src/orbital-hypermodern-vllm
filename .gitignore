@@ -1,0 +1,6 @@
+virtualenvs/
+*.lean
+/tmp/
+result
+result-*
+.direnv/
