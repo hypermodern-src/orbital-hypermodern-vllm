@@ -5,9 +5,31 @@
 { lib }:
 let
   model = "sakamakismile/Qwen3.6-27B-Text-NVFP4-MTP";
+
+  serveArgs = [
+    "--trust-remote-code"
+    "--quantization"
+    "modelopt"
+    "--language-model-only"
+    "--max-model-len"
+    "262144"
+    "--max-num-seqs"
+    "2"
+    "--kv-cache-dtype"
+    "fp8"
+    "--gpu-memory-utilization"
+    "0.9"
+    "--reasoning-parser"
+    "qwen3"
+    "--enable-auto-tool-choice"
+    "--tool-call-parser"
+    "qwen3_xml"
+    "--speculative-config"
+    ''{"method":"qwen3_5_mtp","num_speculative_tokens":3}''
+  ];
 in
 {
-  inherit model;
+  inherit model serveArgs;
 
   venvName = "vllm-venv-qwen3.6-nvfp4-mtp";
   pythonVersion = "3.12";
@@ -23,22 +45,6 @@ in
   # Power limit in watts. 475 is the verified-stable ceiling on this RTX PRO
   # 6000 Blackwell; the 600W default triggers Xid 79 under sustained load.
   powerLimit = 475;
-
-  # Base flags for `vllm serve`. The NixOS module appends --host/--port;
-  # interactive apps rely on vllm's defaults (localhost:8000).
-  serveArgs = [
-    "--trust-remote-code"
-    "--quantization" "modelopt"
-    "--language-model-only"
-    "--max-model-len" "262144"
-    "--max-num-seqs" "2"
-    "--kv-cache-dtype" "fp8"
-    "--gpu-memory-utilization" "0.9"
-    "--reasoning-parser" "qwen3"
-    "--enable-auto-tool-choice"
-    "--tool-call-parser" "qwen3_xml"
-    "--speculative-config" ''{"method":"qwen3_5_mtp","num_speculative_tokens":3}''
-  ];
 
   # Default bind address/port for the managed service.
   host = "127.0.0.1";
